@@ -4,6 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 function HomeScreen({ navigation, route }) {
+  const [count, setCount] = React.useState(0);
+
   React.useEffect(() => {
     if (route.params?.post) {
       // Post updated, do something with `route.params.post`
@@ -11,9 +13,18 @@ function HomeScreen({ navigation, route }) {
     }
   }, [route.params?.post]);
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button onPress={() => setCount(c => c + 1)} title="Update count" />
+      ),
+    });
+  }, [navigation]);
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text>
+      <Text>Count: {count}</Text>
       <Button
         title="Go to Details"
         onPress={() => {
@@ -133,13 +144,13 @@ function App() {
           component={HomeScreen}
           options={{
             headerTitle: props => <LogoTitle {...props} />,
-            headerRight: () => (
-              <Button
-                onPress={() => alert('This is a button!')}
-                title="Info"
-                color="#fff"
-              />
-            )
+            // headerRight: () => (
+            //   <Button
+            //     onPress={() => alert('This is a button!')}
+            //     title="Info"
+            //     color="#fff"
+            //   />
+            // )
           }}
         />
         <Stack.Screen
