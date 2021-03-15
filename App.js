@@ -23,6 +23,14 @@ function HomeScreen({ navigation, route }) {
         }}
       />
       <Button
+        title="Go to Profile"
+        onPress={() => {
+          navigation.navigate('Profile', {
+            name: 'User Profile'
+          });
+        }}
+      />
+      <Button
         title="Create post"
         onPress={() => navigation.navigate('CreatePost')}
       />
@@ -79,6 +87,15 @@ function DetailsScreen({ navigation, route }) {
   );
 }
 
+function ProfileScreen({ navigation, route }) {
+  return (
+    <View>
+      <Text>Profile Screen</Text>
+      <Button title='Go back' onPress={() => navigation.goBack()} />
+    </View>
+  )
+}
+
 const Stack = createStackNavigator();
 
 function App() {
@@ -98,6 +115,11 @@ function App() {
         <Stack.Screen
           name='CreatePost'
           component={CreatePostScreen}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={({ route }) => ({ title: route.params.name })}
         />
       </Stack.Navigator>
     </NavigationContainer>
