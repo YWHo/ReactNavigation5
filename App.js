@@ -91,6 +91,10 @@ function ProfileScreen({ navigation, route }) {
   return (
     <View>
       <Text>Profile Screen</Text>
+      <Button
+        title="Update the title"
+        onPress={() => navigation.setOptions({ title: 'Updated Profile' })}
+      />
       <Button title='Go back' onPress={() => navigation.goBack()} />
     </View>
   )
