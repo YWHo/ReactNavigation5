@@ -2,6 +2,11 @@ import * as React from 'react';
 import { Button, Image, View, Text, TextInput } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function HomeScreen({ navigation, route }) {
   const [count, setCount] = React.useState(0);
@@ -39,6 +44,12 @@ function HomeScreen({ navigation, route }) {
           navigation.navigate('Profile', {
             name: 'User Profile'
           });
+        }}
+      />
+      <Button
+        title="Go to Compose"
+        onPress={() => {
+          navigation.navigate('Compose');
         }}
       />
       <Button
@@ -111,7 +122,51 @@ function ProfileScreen({ navigation, route }) {
   )
 }
 
-const Stack = createStackNavigator();
+function FeedScreen() {
+  return (
+    <View>
+      <Text>Feed Screen</Text>
+    </View>
+  )
+}
+
+function MessagesScreen() {
+  return (
+    <View>
+      <Text>Messages Screen</Text>
+    </View>
+  )
+}
+
+function ComposeScreen() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'Feed') {
+            iconName = focused
+              ? 'ios-information-circle'
+              : 'ios-information-circle-outline';
+          } else if (route.name === 'Messages') {
+            iconName = focused ? 'mail' : 'mail-outline';
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: 'tomato',
+        inactiveTintColor: 'gray',
+      }}
+    >
+      <Tab.Screen name="Feed" component={FeedScreen} />
+      <Tab.Screen name="Messages" component={MessagesScreen} options={{ tabBarBadge: 3 }} />
+    </Tab.Navigator>
+  )
+}
 
 function LogoTitle() {
   return (
@@ -166,6 +221,10 @@ function App() {
           name="Profile"
           component={ProfileScreen}
           options={({ route }) => ({ title: route.params.name })}
+        />
+        <Stack.Screen
+          name='Compose'
+          component={ComposeScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
