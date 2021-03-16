@@ -5,9 +5,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
-
 function HomeScreen({ navigation, route }) {
   const [count, setCount] = React.useState(0);
 
@@ -30,6 +27,10 @@ function HomeScreen({ navigation, route }) {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text>
       <Text>Count: {count}</Text>
+      <Button
+        onPress={() => navigation.navigate('MyModal')}
+        title="Open Modal"
+      />
       <Button
         title="Go to Details"
         onPress={() => {
@@ -138,6 +139,31 @@ function MessagesScreen() {
   )
 }
 
+function LogoTitle() {
+  return (
+    <Image
+      style={{ width: 40, height: 40 }}
+      source={{
+        uri: 'https://reactnative.dev/img/tiny_logo.png',
+      }}
+    />
+  );
+}
+
+function ModalScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 30 }}>This is a modal!</Text>
+      <Button onPress={() => navigation.goBack()} title="Dismiss" />
+    </View>
+  );
+}
+
+const MainStack = createStackNavigator();
+const RootStack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+
 function ComposeScreen() {
   return (
     <Tab.Navigator
@@ -168,65 +194,74 @@ function ComposeScreen() {
   )
 }
 
-function LogoTitle() {
+function MainStackScreen() {
   return (
-    <Image
-      style={{ width: 40, height: 40 }}
-      source={{
-        uri: 'https://reactnative.dev/img/tiny_logo.png',
-      }}
-    />
+    <MainStack.Navigator
+      initialRouteName='Home'
+      screenOptions={{
+      headerStyle: {
+        backgroundColor: '#f4511e',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    }}
+    >
+      <MainStack.Screen
+        name='Home'
+        component={HomeScreen}
+        options={{
+          headerTitle: props => <LogoTitle {...props} />,
+          // headerRight: () => (
+          //   <Button
+          //     onPress={() => alert('This is a button!')}
+          //     title="Info"
+          //     color="#fff"
+          //   />
+          // )
+        }}
+      />
+      <MainStack.Screen
+        name='Details'
+        component={DetailsScreen}
+        initialParams={{ itemId: 42 }}
+      />
+      <MainStack.Screen
+        name='CreatePost'
+        component={CreatePostScreen}
+      />
+      <MainStack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={({ route }) => ({ title: route.params.name })}
+      />
+      <MainStack.Screen
+        name='Compose'
+        component={ComposeScreen}
+      />
+    </MainStack.Navigator>
+  )
+}
+
+function RootStackScreen() {
+  return (
+    <RootStack.Navigator mode="modal">
+      <RootStack.Screen
+        name="Main"
+        component={MainStackScreen}
+        options={{ headerShown: false }}
+      />
+      <RootStack.Screen name="MyModal" component={ModalScreen} />
+    </RootStack.Navigator>
   );
 }
+
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName='Home'
-        screenOptions={{
-        headerStyle: {
-          backgroundColor: '#f4511e',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}
-      >
-        <Stack.Screen
-          name='Home'
-          component={HomeScreen}
-          options={{
-            headerTitle: props => <LogoTitle {...props} />,
-            // headerRight: () => (
-            //   <Button
-            //     onPress={() => alert('This is a button!')}
-            //     title="Info"
-            //     color="#fff"
-            //   />
-            // )
-          }}
-        />
-        <Stack.Screen
-          name='Details'
-          component={DetailsScreen}
-          initialParams={{ itemId: 42 }}
-        />
-        <Stack.Screen
-          name='CreatePost'
-          component={CreatePostScreen}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={({ route }) => ({ title: route.params.name })}
-        />
-        <Stack.Screen
-          name='Compose'
-          component={ComposeScreen}
-        />
-      </Stack.Navigator>
+      <RootStackScreen />
     </NavigationContainer>
   );
 }
